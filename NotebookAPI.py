@@ -16,39 +16,39 @@ def test_route():
 def init_databases():
 	users.create_table()
 	todos.create_table()
-	return jsonify({'initiaized': 'initiaized'})
+	return jsonify({'initiaized': 'initiaized'}), 201
 
 #post /user
 @app.route("/user", method=['POST'])
 def add_user():
 	new_user = users(name = request.json['title'], password = request.json['password'], user_id = users.get())
 	new_user.save()
-	return jsonify({'name': 'initiaized'})
+	#return jsonify({'name': 'initiaized'})
 
 
 #get /todo
 @app.route("/todo", method=['GET'])
 def get_todo():
-	return jsonify({'todo_get': 'todo_get'})
+	#return jsonify({'todo_get': 'todo_get'})
 
 #post /todo
 @app.route("/todo", method=['POST'])
 def add_todo():
 	if not request.json or not 'title' in request.json:
 		abort(400)
-	return jsonify({'initiaized': 'initiaized'})
+	#return jsonify({'initiaized': 'initiaized'})
 
 
 #delete /todo/{id}
 @app.route("/user", method=['DELETE'])
 def delete_todo():
-	return jsonify({'initiaized': 'initiaized'})
+	#return jsonify({'initiaized': 'initiaized'})
 
 
 #put /todo/{id}
 @app.route("/user", method=['PUT'])
 def update_todo():
-	return jsonify({'initiaized': 'initiaized'})
+	#return jsonify({'initiaized': 'initiaized'})
 
 
 # Аутентификация пользователя с использованием HTTP Basic Authentication или JWT.
