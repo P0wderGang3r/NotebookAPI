@@ -23,7 +23,7 @@ def init_databases():
 @app.route("/user", methods=['POST'])
 def add_user():
 	users.create(user_id = int(datetime.datetime.now().timestamp()), name = request.json['name'], password = request.json['password'])
-	return jsonify({users.get(users.name == str(request.json['name'])): 'initiaized'})
+	return jsonify({users.get(users.name == str(request.json['name']).name): 'initiaized'})
 
 
 #get /todo
@@ -42,6 +42,7 @@ def add_todo():
 #delete /todo/{id}
 @app.route("/user", methods=['DELETE'])
 def delete_todo():
+	user = users.get()
 	return jsonify({'initiaized': 'initiaized'})
 
 
