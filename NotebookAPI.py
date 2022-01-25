@@ -15,36 +15,20 @@ def test_route():
 @app.route("/init_databases")
 def init_databases():
 	users.create_table()
-	characters.create_table()
-	inventories.create_table()
-	global_coords.create_table()
-	weapons.create_table()
-	item_effects.create_table()
+	todos.create_table()
 	return "initialized"
 
-@app.route("/create_user")
-def create_user():
-	return "created"
+#post /user
 
-@app.route("/create_character")
-def create_character():
-	return "created"
+#get /todo
 
-@app.route("/move")
-def move():
-	return "moved"
+#post /todo
 
-@app.route("/buy_item")
-def buy_item():
-	return "bought"
+#delete /todo/{id}
 
-@app.route("/sell_item")
-def sell_item():
-	return "selled"
+#put /todo/{id}
 
-@app.rout("/give_some_money")
-def give_some_money():
-	return "given"
+# Аутентификация пользователя с использованием HTTP Basic Authentication или JWT.
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0')
