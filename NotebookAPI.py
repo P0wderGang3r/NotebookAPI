@@ -6,7 +6,14 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-	return "<h1 style = 'color:blue'>Hello world!</h1>"
+	return "<h1 style = 'color:green'>Default route</h1>" +
+		"Routes: <br>" +
+		"<li>/init_databases </li>" +
+		"<li>[post] /user </li>" +
+		"<li>[get] /todo </li>" +
+		"<li>[post] /todo </li>" +
+		"<li>[delete] /todo/{id} </li>" +
+		"<li>[put] /todo/{id} </li>"
 
 @app.route("/test")
 def test_route():
