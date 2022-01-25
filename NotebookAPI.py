@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from peewee import *
 from dbclasses import *
-from datetime import datetime
+from datetime import *
 
 app = Flask(__name__)
 
