@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from peewee import *
 from dbclasses import *
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -21,7 +22,7 @@ def init_databases():
 #post /user
 @app.route("/user", methods=['POST'])
 def add_user():
-	new_user = users(name = request.json['name'], password = request.json['password'], user_id = users.get())
+	new_user = users(user_id = int(datetime.now()), name = request.json['name'], password = request.json['password'], user_id = users.get())
 	new_user.save()
 	return jsonify({users.select().where(users.name == request.json['name']).get(): 'initiaized'})
 
