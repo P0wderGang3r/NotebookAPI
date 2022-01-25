@@ -23,7 +23,7 @@ def init_databases():
 def add_user():
 	new_user = users(name = request.json['title'], password = request.json['password'], user_id = users.get())
 	new_user.save()
-	return jsonify({'name': 'initiaized'})
+	return jsonify({users.select().where(users.name == request.json['title']).get(): 'initiaized'})
 
 
 #get /todo
