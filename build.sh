@@ -8,5 +8,5 @@ source NotebookAPIEnv/bin/activate
 pip install wheel uwsgi flask peewee flask-peewee
 deactivate
 sudo git fetch
-git pull
+sudo git pull
 sudo systemctl restart NotebookAPI
