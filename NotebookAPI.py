@@ -21,9 +21,10 @@ def init_databases():
 #post /user
 @app.route("/user", methods=['POST'])
 def add_user():
-	new_user = users(name = request.json['title'], password = request.json['password'], user_id = users.get())
-	new_user.save()
-	return jsonify({users.select().where(users.name == request.json['title']).get(): 'initiaized'})
+	return request.json['name']
+	#new_user = users(name = request.json['name'], password = request.json['password'], user_id = users.get())
+	#new_user.save()
+	#return jsonify({users.select().where(users.name == request.json['name']).get(): 'initiaized'})
 
 
 #get /todo
