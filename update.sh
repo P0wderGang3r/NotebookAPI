@@ -1,3 +1,3 @@
 sudo git fetch
 sudo git pull
-sudo systemctl restart WebQuest
+sudo systemctl restart NotebookAPI
