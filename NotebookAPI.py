@@ -23,7 +23,7 @@ def init_databases():
 @app.route("/user", methods=['POST'])
 def add_user():
 	users.create(user_id = int(datetime.datetime.now().timestamp()), name = request.json['name'], password = request.json['password'])
-	return jsonify({users.get(users.name == str(request.json['name']).name): 'initiaized'})
+	return jsonify({users.get(name == str(request.json['name'])).name: 'initiaized'})
 
 
 #get /todo
@@ -34,22 +34,27 @@ def get_todo():
 #post /todo
 @app.route("/todo", methods=['POST'])
 def add_todo():
-	if not request.json or not 'title' in request.json:
-		abort(400)
-	return jsonify({'initiaized': 'initiaized'})
+	if (users.get(user_id == int(request.json['user_id'])).name != ""):
+		todos.create(user_id == int(request.json['user_id']), todo_id = 0, date = datetime.datetime.now(), text = request.json['text'])
+		return jsonify({'initiaized': 'initiaized'})
+	return jsonify({'not initiaized': 'not initiaized'})
 
 
 #delete /todo/{id}
 @app.route("/user", methods=['DELETE'])
 def delete_todo():
-	user = users.get()
-	return jsonify({'initiaized': 'initiaized'})
+	todo = todos.get(user_id == request.json['user_id'], todo_id == request.json['todo_id'])
+	user.delete_instance()
+	return jsonify({'deleted': 'deleted'})
 
 
 #put /todo/{id}
 @app.route("/user", methods=['PUT'])
 def update_todo():
-	return jsonify({'initiaized': 'initiaized'})
+	todo = todos(user_id == request.json['user_id'], todo_id == request.json['todo_id'])
+	todo.text = request.json['user_id']
+	todo.save()
+	return jsonify({'added': 'added'})
 
 
 # Аутентификация пользователя с использованием HTTP Basic Authentication или JWT.
