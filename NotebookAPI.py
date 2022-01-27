@@ -42,7 +42,7 @@ def add_user():
 #get /user
 @app.route("/user", methods=['GET'])
 def get_user():
-	curr_session_id = request.json['session_id']
+	curr_session_id = request.json['token']
 
 	user = users.select().where(users.last_session_id == curr_session_id).get()
 	return jsonify({'name': user.name})
@@ -67,7 +67,7 @@ def login():
 #post /todo
 @app.route("/todo", methods=['POST'])
 def add_todo():
-	curr_session_id = request.json['session_id']
+	curr_session_id = request.json['token']
 	user = users.get()
 
 	try:
@@ -92,7 +92,7 @@ def add_todo():
 #get /todo
 @app.route("/todo", methods=['GET'])
 def get_todo():
-	curr_session_id = request.json['session_id']
+	curr_session_id = request.json['token']
 	user = users.get()
 
 	try:
