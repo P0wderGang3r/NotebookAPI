@@ -82,10 +82,10 @@ def add_todo():
 	curr_todo_id = 0 + curr_user_id + int(curr_datetime) + ord(curr_session_id[0])
 
 	try:
-	todos.create(todo_id = curr_todo_id, user_id = curr_user_id, text = curr_text)
+		todos.create(todo_id = curr_todo_id, user_id = curr_user_id, text = curr_text)
 
-	todo = todos.select().where(todos.user_id == curr_user_id).get()
-	return jsonify({todo.todo_id: todo.text})
+		todo = todos.select().where(todos.user_id == curr_user_id).get()
+		return jsonify({todo.todo_id: todo.text})
 	except Exception as e:
 		return "There are no such user to add todo"
 
