@@ -5,7 +5,7 @@ class users(Model):
     user_id = IntegerField(primary_key = True, unique = True)
     name = CharField(unique = True)
     password = CharField()
-    last_session = CharField()
+    last_session_id = CharField()
 
     class Meta:
         database = SqliteDatabase('users.db')

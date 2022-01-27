@@ -34,17 +34,17 @@ def add_user():
 	curr_id = 0 + ord(curr_name[0]) + ord(curr_password[0]) + int(curr_datetime)
 	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
-	users.create(user_id = curr_id, name = curr_name, password = curr_password, last_session = curr_session_id)
+	users.create(user_id = curr_id, name = curr_name, password = curr_password, last_session_id = curr_session_id)
 
 	user = users.select().where(users.name == curr_name).get()
-	return jsonify({'token': user.curr_session_id})
+	return jsonify({'token': user.last_session_id})
 
 #get /user
 @app.route("/user", methods=['GET'])
 def get_user():
 	curr_session_id = request.json['session_id']
 
-	user = users.select().where(users.last_session == curr_session_id).get()
+	user = users.select().where(users.last_session_id == curr_session_id).get()
 	return jsonify({'name': user.name})
 
 #get /login
@@ -57,10 +57,10 @@ def login():
 	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
 	user = users.select().where(users.name == curr_name, users.password == curr_password).get()
-	user.last_session = curr_session_id
+	user.last_session_id = curr_session_id
 	user.save()
 
-	return jsonify({'token': user.last_session})
+	return jsonify({'token': user.last_session_id})
 
 #-----------------------------------------------------------------
 
@@ -71,7 +71,7 @@ def add_todo():
 	user = users.get()
 
 	try:
-		user = users.select().where(users.last_session == int(curr_session_id)).get()
+		user = users.select().where(users.last_session_id == int(curr_session_id)).get()
 	except Exception as e:
 		return "Incorrect session identificator"
 
@@ -96,7 +96,7 @@ def get_todo():
 	user = users.get()
 
 	try:
-		user = users.select().where(users.last_session == int(curr_session_id)).get()
+		user = users.select().where(users.last_session_id == int(curr_session_id)).get()
 	except Exception as e:
 		return "Incorrect session identificator"
 
