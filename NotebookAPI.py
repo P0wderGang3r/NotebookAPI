@@ -102,7 +102,7 @@ def get_todo():
 
 	curr_user_id = user.user_id
 
-	todo_query = todos.select().where(todos.user_id == curr_user_id).get()
+	todo_query = todos.get(todos.user_id == curr_user_id)
 	todo_output = []
 
 	for todo in todo_query:
