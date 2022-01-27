@@ -56,7 +56,7 @@ def get_user():
 	return jsonify({'name': user.name})
 
 #get /login
-@app.route("/login", methods=['POST'])
+@app.route("/login", methods=['GET'])
 def login():
 	#сбор данных об окружении
 	curr_name = request.json['name']
