@@ -79,7 +79,7 @@ def add_todo():
 	curr_text = request.json['text']
 	curr_datetime = int(datetime.datetime.now().timestamp())
 
-	curr_todo_id = int.from_bytes(base64.b64encode(bytes('' + curr_user_id + str(curr_datetime), 'utf-8')))
+	curr_todo_id = int.from_bytes(base64.b64encode(bytes('' + str(curr_user_id) + str(curr_datetime), 'utf-8')))
 
 	try:
 		todos.create(todo_id = curr_todo_id, user_id = curr_user_id, text = curr_text)
