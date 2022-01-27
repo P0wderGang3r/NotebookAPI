@@ -27,7 +27,7 @@ def add_user():
 	curr_name = request.json['name']
 	curr_password = request.json['password']
 	users.create(user_id = int(datetime.datetime.now().timestamp()), name = curr_name, password = curr_password)
-	user = users.get(name == curr_name)
+	user = users.get().where(name == curr_name)
 	return jsonify({user.name: 'initiaized'})
 
 

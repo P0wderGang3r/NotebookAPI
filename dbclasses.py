@@ -4,7 +4,7 @@ from peewee import *
 class users(Model):
     user_id = IntegerField(primary_key = True, unique = True)
     name = CharField(unique = True)
-    password = CharField(unique = True)
+    password = CharField()
 
     class Meta:
         database = SqliteDatabase('users.db')
