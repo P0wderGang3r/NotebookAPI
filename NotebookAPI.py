@@ -128,7 +128,7 @@ def get_todo():
 
 
 #delete /todo/{id}
-@app.route("/user", methods=['DELETE'])
+@app.route("/todo", methods=['DELETE'])
 def delete_todo():
 	#Аутентификация
 	curr_session_id = request.json['token']
@@ -149,7 +149,7 @@ def delete_todo():
 
 
 #put /todo/{id}
-@app.route("/user", methods=['PUT'])
+@app.route("/todo", methods=['PUT'])
 def update_todo():
 	#Аутентификация
 	curr_session_id = request.json['token']
