@@ -14,7 +14,6 @@ class users(Model):
 class todos(Model):
     todo_id = IntegerField(primary_key = True, unique = True)
     user_id = ForeignKeyField(model = users)
-    date = DateField()
     text = TextField()
 
     class Meta:

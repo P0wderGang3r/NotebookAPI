@@ -26,7 +26,18 @@ def add_user():
 	curr_password = request.json['password']
 	users.create(user_id = int(datetime.datetime.now().timestamp()), name = curr_name, password = curr_password)
 	user = users.select().where(users.name == curr_name).get()
-	return jsonify({user.name: 'initiaized'})
+	return jsonify({user.user_id: 'initiaized'})
+
+#get /user
+@app.route("/user", methods=['POST'])
+def add_user():
+	curr_name = request.json['name']
+	curr_password = request.json['password']
+
+	users.create(user_id = int(datetime.datetime.now().timestamp()), name = curr_name, password = curr_password)
+
+	user = users.select().where(users.name == curr_name).get()
+	return jsonify({user.user_id: 'initiaized'})
 
 
 #get /todo
@@ -37,10 +48,16 @@ def get_todo():
 #post /todo
 @app.route("/todo", methods=['POST'])
 def add_todo():
-	if (users.get(user_id == int(request.json['user_id'])).name != ""):
-		todos.create(user_id == int(request.json['user_id']), todo_id = 0, date = datetime.datetime.now(), text = request.json['text'])
-		return jsonify({'initiaized': 'initiaized'})
-	return jsonify({'not initiaized': 'not initiaized'})
+	curr_id = request.json['user_id']
+	curr_text = request.json['text']
+
+	user = users.select().where(users.user_id == int(curr_id)).get()
+	return user
+
+	if (user.name != ""):
+		return jsonify({'not initiaized': 'not initiaized'})
+
+	#todos.create(todo_id = int(datetime.datetime.now().timestamp()), user_id = curr_id, text = curr_text)
 
 
 #delete /todo/{id}
