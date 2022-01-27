@@ -19,6 +19,8 @@ def init_databases():
 	todos.create_table()
 	return jsonify({'initiaized': 'initiaized'})
 
+#-----------------------------------------------------------------
+
 #post /user
 @app.route("/user", methods=['POST'])
 def add_user():
@@ -37,13 +39,9 @@ def get_user():
 	curr_password = request.json['password']
 
 	user = users.select().where(users.name == curr_name).get()
-	return jsonify({user.user_id: 'initiaized'})
+	return jsonify({user.user_id: user.password})
 
-
-#get /todo
-@app.route("/todo", methods=['GET'])
-def get_todo():
-	return jsonify({'todo_get': 'todo_get'})
+#-----------------------------------------------------------------
 
 #post /todo
 @app.route("/todo", methods=['POST'])
@@ -51,14 +49,22 @@ def add_todo():
 	curr_id = request.json['user_id']
 	curr_text = request.json['text']
 
-	user = users.select().where(users.user_id == int(curr_id)).get()
-	return user
+	try:
+		user = users.select().where(users.user_id == int(curr_id)).get()
+	except Exception as e:
+		return "There are no such user to add todo"
 
-	#if (user.name != ""):
-		#return jsonify({'not initiaized': 'not initiaized'})
+	todos.create(todo_id = int(datetime.datetime.now().timestamp()), user_id = curr_id, text = curr_text)
 
-	#todos.create(todo_id = int(datetime.datetime.now().timestamp()), user_id = curr_id, text = curr_text)
+	todo = todos.select().where(todos.user_id == curr_id).get()
+	return jsonify({todo.user_id: todo.text})
 
+#get /todo
+@app.route("/todo", methods=['GET'])
+def get_todo():
+	return jsonify({todos.select().get().user_id: todos.select().get().text})
+
+#-----------------------------------------------------------------
 
 #delete /todo/{id}
 @app.route("/user", methods=['DELETE'])
