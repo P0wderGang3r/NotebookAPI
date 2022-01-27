@@ -33,8 +33,8 @@ def add_user():
 	if (len(user_query) == 0):
 		curr_id = 1
 	else:
-		curr_id = users.select().dicts().execute()[len(user_query) - 1]['user_id'] + 1]
-	
+		curr_id = users.select().dicts().execute()[len(user_query) - 1]['user_id'] + 1
+
 	#curr_id = len(todo_query) + ord(curr_name[0]) + ord(curr_password[0]) + int(curr_datetime)
 	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
