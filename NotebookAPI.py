@@ -35,7 +35,7 @@ def add_user():
 	else:
 		curr_id = user_query[len(user_query) - 1]['user_id'] + 1
 
-	return len(user_query)
+	return str(len(user_query))
 	#curr_id = len(todo_query) + ord(curr_name[0]) + ord(curr_password[0]) + int(curr_datetime)
 	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
