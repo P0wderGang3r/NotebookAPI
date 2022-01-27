@@ -51,9 +51,9 @@ def get_user():
 def login():
 	curr_name = request.json['name']
 	curr_password = request.json['password']
-	curr_datetime = int(datetime.datetime.now().timestamp())
+	curr_datetime = int.from_bytes(datetime.datetime.now().timestamp())
 
-	curr_session_id = int(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
+	curr_session_id = int.from_bytes(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
 	user = users.select().where(users.name == curr_name, users.password == curr_password).get()
 	user.last_session = curr_session_id
@@ -76,9 +76,9 @@ def add_todo():
 
 	curr_user_id = user.user_id
 	curr_text = request.json['text']
-	curr_datetime = int(datetime.datetime.now().timestamp())
+	curr_datetime = int.from_bytes(datetime.datetime.now().timestamp())
 
-	curr_todo_id = int(base64.b64encode(bytes('' + curr_user_id + str(curr_datetime), 'utf-8')))
+	curr_todo_id = int.from_bytes(base64.b64encode(bytes('' + curr_user_id + str(curr_datetime), 'utf-8')))
 
 	try:
 		todos.create(todo_id = curr_todo_id, user_id = curr_user_id, text = curr_text)
