@@ -56,7 +56,7 @@ def login():
 
 	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
-	user = users.get(name == curr_name, password == curr_password)
+	user = users.get(users.name == curr_name, users.password == curr_password)
 	user.last_session_id = curr_session_id
 	user.save()
 
