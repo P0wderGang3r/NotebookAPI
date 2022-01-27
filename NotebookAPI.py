@@ -102,7 +102,11 @@ def get_todo():
 
 	curr_user_id = user.user_id
 
-	todo_output = todos.select().where(todos.user_id == curr_user_id).get()
+	todo_query = todos.select().where(todos.user_id == curr_user_id).get()
+	todo_output = []
+
+	for (todo in todo_query):
+		todo_output.append(sonify(todo.todo_id, todo.text))
 
 	#try:
 	return jsonify(todo_output)
@@ -117,7 +121,7 @@ def delete_todo():
 	curr_user_id = request.json['user_id']
 	curr_todo_id = request.json['todo_id']
 
-	todo = todos.select().where(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id).get()
+	todo = todos.get(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id)
 	todo.delete_instance()
 	return "deleted"
 
