@@ -20,20 +20,22 @@ def init_databases():
 	todos.create_table()
 	return jsonify({'initiaized': 'initiaized'})
 
+
 #-----------------------------------------------------------------
-#Нужна генерация новых токенов входа
+
 
 #post /user
 @app.route("/user", methods=['POST'])
 def add_user():
+	#сбор данных об окружении
 	curr_name = request.json['name']
 	curr_password = request.json['password']
+
 	curr_datetime = int(datetime.datetime.now().timestamp())
-
-
 	curr_id = 0 + ord(curr_name[0]) + ord(curr_password[0]) + int(curr_datetime)
 	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
+	#основной код
 	users.create(user_id = curr_id, name = curr_name, password = curr_password, last_session_id = curr_session_id)
 
 	user = users.select().where(users.name == curr_name).get()
@@ -42,49 +44,57 @@ def add_user():
 #get /user
 @app.route("/user", methods=['GET'])
 def get_user():
+	#сбор данных об окружении
 	curr_session_id = request.json['token']
 
+	#основной код
 	user = users.select().where(users.last_session_id == curr_session_id).get()
 	return jsonify({'name': user.name})
 
 #get /login
 @app.route("/login", methods=['POST'])
 def login():
+	#сбор данных об окружении
 	curr_name = request.json['name']
 	curr_password = request.json['password']
-	curr_datetime = int(datetime.datetime.now().timestamp())
 
+	curr_datetime = int(datetime.datetime.now().timestamp())
 	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
+	#основной код
 	user = users.get(users.name == curr_name, users.password == curr_password)
 	user.last_session_id = curr_session_id
 	user.save()
 
 	return jsonify({'token': user.last_session_id})
 
+
 #-----------------------------------------------------------------
+
 
 #post /todo
 @app.route("/todo", methods=['POST'])
 def add_todo():
+	#Аутентификация
 	curr_session_id = request.json['token']
 	user = users.get()
-
 	try:
 		user = users.select().where(users.last_session_id == curr_session_id).get()
 	except Exception as e:
 		return "Incorrect session identificator"
 
+	#сбор данных об окружении
 	curr_user_id = user.user_id
 	curr_text = request.json['text']
-	curr_datetime = int(datetime.datetime.now().timestamp())
 
+	curr_datetime = int(datetime.datetime.now().timestamp())
 	curr_todo_id = 0 + curr_user_id + int(curr_datetime) + ord(curr_session_id[0])
 
+	#основной код
 	try:
 		todos.create(todo_id = curr_todo_id, user_id = curr_user_id, text = curr_text)
 
-		todo = todos.select().where(todos.user_id == curr_user_id).get()
+		todo = todos.select().where(todos.todo_id == curr_todo_id).get()
 		return jsonify({todo.todo_id: todo.text})
 	except Exception as e:
 		return "There are no such user to add todo"
@@ -108,19 +118,31 @@ def get_todo():
 	for todo in todo_query:
 		todo_output.append(todo)
 
-	#try:
-	return jsonify(todo_output)
-	#except Exception as e:
-		#return "There are no todos for provided id in the table"
+	try:
+		return jsonify(todo_output)
+	except Exception as e:
+		return "There are no todos for provided id in the table"
+
 
 #-----------------------------------------------------------------
 
+
 #delete /todo/{id}
 @app.route("/user", methods=['DELETE'])
-def delete_todo():
-	curr_user_id = request.json['user_id']
+def delete_todo()
+	#Аутентификация
+	curr_session_id = request.json['token']
+	user = users.get()
+	try:
+		user = users.select().where(users.last_session_id == curr_session_id).get()
+	except Exception as e:
+		return "Incorrect session identificator"
+
+	#сбор данных об окружении
+	curr_user_id = user.user_id
 	curr_todo_id = request.json['todo_id']
 
+	#основной код
 	todo = todos.get(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id)
 	todo.delete_instance()
 	return "deleted"
@@ -129,15 +151,25 @@ def delete_todo():
 #put /todo/{id}
 @app.route("/user", methods=['PUT'])
 def update_todo():
-	curr_user_id = request.json['user_id']
+	#Аутентификация
+	curr_session_id = request.json['token']
+	user = users.get()
+	try:
+		user = users.select().where(users.last_session_id == curr_session_id).get()
+	except Exception as e:
+		return "Incorrect session identificator"
+
+	#сбор данных об окружении
+	curr_user_id = user.user_id
 	curr_todo_id = request.json['todo_id']
 	curr_text = request.json['text']
 
-	todo = todos.select().where(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id).get()
+	#основной код
+	todo = todos.get(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id)
 	todo.text = curr_text
 	todo.save()
 
-	return jsonify({'added': 'added'})
+	return jsonify({todo.todo_id: todo.text})
 
 
 # Аутентификация пользователя с использованием HTTP Basic Authentication или JWT.
