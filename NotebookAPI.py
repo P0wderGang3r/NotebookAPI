@@ -8,17 +8,14 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-	return "<h1 style = 'color:green'>Default route</h1>" +	"Routes: <br>" + "<li>/init_databases </li>" + "<li>[post] /user </li>" + "<li>[get] /todo </li>" +	"<li>[post] /todo </li>" + "<li>[delete] /todo/{id} </li>" + "<li>[put] /todo/{id} </li>"
+	return "<h1 style = 'color:green'>Default route</h1>" +	"Routes: <br>" + "<li>/init_databases </li>" + "<li>[post] /user </li>" + "<li>[get] /user </li>" + "<li>[get] /login </li>" + "<li>[get] /todo </li>" + "<li>[post] /todo </li>" + "<li>[delete] /todo </li>" + "<li>[put] /todo </li>"
 
-@app.route("/test")
-def test_route():
-	return "Test_route"
 
 @app.route("/init_databases", methods=['POST'])
 def init_databases():
 	users.create_table()
 	todos.create_table()
-	return jsonify({'initiaized': 'initiaized'})
+	return "databases initialized"
 
 
 #-----------------------------------------------------------------
@@ -127,7 +124,7 @@ def get_todo():
 #-----------------------------------------------------------------
 
 
-#delete /todo/{id}
+#delete /todo
 @app.route("/todo", methods=['DELETE'])
 def delete_todo():
 	#Аутентификация
@@ -148,7 +145,7 @@ def delete_todo():
 	return "deleted"
 
 
-#put /todo/{id}
+#put /todo
 @app.route("/todo", methods=['PUT'])
 def update_todo():
 	#Аутентификация
