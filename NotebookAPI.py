@@ -24,17 +24,17 @@ def init_databases():
 def add_user():
 	curr_name = request.json['name']
 	curr_password = request.json['password']
+
 	users.create(user_id = int(datetime.datetime.now().timestamp()), name = curr_name, password = curr_password)
+
 	user = users.select().where(users.name == curr_name).get()
 	return jsonify({user.user_id: 'initiaized'})
 
 #get /user
-@app.route("/user", methods=['POST'])
-def add_user():
+@app.route("/user", methods=['GET'])
+def get_user():
 	curr_name = request.json['name']
 	curr_password = request.json['password']
-
-	users.create(user_id = int(datetime.datetime.now().timestamp()), name = curr_name, password = curr_password)
 
 	user = users.select().where(users.name == curr_name).get()
 	return jsonify({user.user_id: 'initiaized'})
@@ -54,8 +54,8 @@ def add_todo():
 	user = users.select().where(users.user_id == int(curr_id)).get()
 	return user
 
-	if (user.name != ""):
-		return jsonify({'not initiaized': 'not initiaized'})
+	#if (user.name != ""):
+		#return jsonify({'not initiaized': 'not initiaized'})
 
 	#todos.create(todo_id = int(datetime.datetime.now().timestamp()), user_id = curr_id, text = curr_text)
 
