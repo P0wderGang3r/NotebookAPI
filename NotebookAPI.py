@@ -30,8 +30,8 @@ def add_user():
 	curr_password = request.json['password']
 	curr_datetime = int(datetime.datetime.now().timestamp())
 
-	curr_id = int.from_bytes(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
-	curr_session_id = int.from_bytes(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
+	curr_id = int.from_bytes(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')), 'big')
+	curr_session_id = int.from_bytes(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')), 'big')
 
 	users.create(user_id = curr_id, name = curr_name, password = curr_password, last_session = curr_session_id)
 
@@ -53,7 +53,7 @@ def login():
 	curr_password = request.json['password']
 	curr_datetime = int(datetime.datetime.now().timestamp())
 
-	curr_session_id = int.from_bytes(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
+	curr_session_id = int.from_bytes(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')), 'big')
 
 	user = users.select().where(users.name == curr_name, users.password == curr_password).get()
 	user.last_session = curr_session_id
@@ -78,7 +78,7 @@ def add_todo():
 	curr_text = request.json['text']
 	curr_datetime = int(datetime.datetime.now().timestamp())
 
-	curr_todo_id = int.from_bytes(base64.b64encode(bytes('' + curr_user_id + str(curr_datetime), 'utf-8')))
+	curr_todo_id = int.from_bytes(base64.b64encode(bytes('' + curr_user_id + str(curr_datetime), 'utf-8')), 'big')
 
 	try:
 		todos.create(todo_id = curr_todo_id, user_id = curr_user_id, text = curr_text)
