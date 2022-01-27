@@ -15,8 +15,6 @@ def test_route():
 
 @app.route("/init_databases", methods=['POST'])
 def init_databases():
-	users.delete().execute()
-	todos.delete().execute()
 	users.create_table()
 	todos.create_table()
 	return jsonify({'initiaized': 'initiaized'})
