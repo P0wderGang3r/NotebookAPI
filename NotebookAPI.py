@@ -10,7 +10,7 @@ app = Flask(__name__)
 def hello():
 	return "<h1 style = 'color:green'>Default route</h1>" +	"Routes: <br>" + "<li>/init_databases </li>" + "<li>[post] /user </li>" + "<li>[get] /user </li>" + "<li>[get] /login </li>" + "<li>[get] /todo </li>" + "<li>[post] /todo </li>" + "<li>[delete] /todo </li>" + "<li>[put] /todo </li>"
 
-
+#В случае существования баз данных не удаляет их, оттого сплю спокойно
 @app.route("/init_databases", methods=['POST'])
 def init_databases():
 	users.create_table()
@@ -29,6 +29,8 @@ def add_user():
 	curr_password = request.json['password']
 
 	curr_datetime = int(datetime.datetime.now().timestamp())
+
+	#костыль для определения последнего сохранённого user_id
 	user_query = users.select().dicts().execute()
 	if (len(user_query) == 0):
 		curr_id = 1
@@ -42,7 +44,6 @@ def add_user():
 	users.create(user_id = curr_id, name = curr_name, password = curr_password, last_session_id = curr_session_id)
 
 	user = users.select().where(users.name == curr_name).get()
-	#return jsonify({'token': user.last_session_id})
 	return jsonify({'token': user.last_session_id})
 
 #get /user
@@ -176,7 +177,8 @@ def update_todo():
 	return jsonify({todo.todo_id: todo.text})
 
 
-# Аутентификация пользователя с использованием HTTP Basic Authentication или JWT.
+#-----------------------------------------------------------------
+
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0')
