@@ -31,7 +31,7 @@ def add_user():
 	curr_datetime = int(datetime.datetime.now().timestamp())
 	todo_query = todos.select().dicts().execute()
 	if (len(todo_query) == 0):
-		curr_id = 1
+		curr_id = 2
 	else:
 		curr_id = users.select().dicts().execute()
 		curr_id = curr_id[len(todo_query)]['user_id'] + 1
