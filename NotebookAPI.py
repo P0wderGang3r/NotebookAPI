@@ -81,13 +81,13 @@ def add_todo():
 
 	curr_todo_id = 0 + curr_user_id + int(curr_datetime) + ord(curr_session_id[0])
 
-	try:
+	#try:
 		todos.create(todo_id = curr_todo_id, user_id = curr_user_id, text = curr_text)
 
 		todo = todos.select().where(todos.user_id == curr_user_id).get()
 		return jsonify({todo.user_id: todo.text})
-	except Exception as e:
-		return "There are no such user to add todo"
+	#except Exception as e:
+		#return "There are no such user to add todo"
 
 #get /todo
 @app.route("/todo", methods=['GET'])
