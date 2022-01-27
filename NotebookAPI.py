@@ -33,7 +33,7 @@ def add_user():
 	if (len(todo_query) == 0):
 		curr_id = 1
 	else:
-		curr_id = users.select().orderby(users.user_id).dicts().execute()[0]
+		curr_id = users.select().order_by(users.user_id).dicts().execute()[0]
 	#curr_id = len(todo_query) + ord(curr_name[0]) + ord(curr_password[0]) + int(curr_datetime)
 	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
@@ -41,7 +41,8 @@ def add_user():
 	users.create(user_id = curr_id, name = curr_name, password = curr_password, last_session_id = curr_session_id)
 
 	user = users.select().where(users.name == curr_name).get()
-	return jsonify({'token': user.last_session_id})
+	#return jsonify({'token': user.last_session_id})
+	return jsonify({'token': user.user_id})
 
 #get /user
 @app.route("/user", methods=['GET'])
