@@ -105,7 +105,7 @@ def get_todo():
 	todo_query = todos.select().where(todos.user_id == curr_user_id).get()
 	todo_output = []
 
-	for (todo in todo_query):
+	for todo in todo_query:
 		todo_output.append(sonify(todo.todo_id, todo.text))
 
 	#try:
