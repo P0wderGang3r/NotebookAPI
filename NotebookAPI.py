@@ -29,7 +29,12 @@ def add_user():
 	curr_password = request.json['password']
 
 	curr_datetime = int(datetime.datetime.now().timestamp())
-	curr_id = 0 + ord(curr_name[0]) + ord(curr_password[0]) + int(curr_datetime)
+	todo_query = todos.select().dicts().execute()
+	if (len(todo_query) == 0):
+		curr_id = 1
+	else:
+		curr_id = users.select().orderby(users.user_id).dicts().execute()[0]
+	#curr_id = len(todo_query) + ord(curr_name[0]) + ord(curr_password[0]) + int(curr_datetime)
 	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
 	#основной код
