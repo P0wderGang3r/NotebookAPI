@@ -48,7 +48,7 @@ def get_user():
 	return jsonify({'name': user.name})
 
 #get /login
-@app.route("/login", methods=['GET'])
+@app.route("/login", methods=['POST'])
 def login():
 	curr_name = request.json['name']
 	curr_password = request.json['password']
@@ -56,7 +56,7 @@ def login():
 
 	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
-	user = users.select().where(users.name == curr_name, users.password == curr_password).get()
+	user = users.get(name == curr_name, password == curr_password)
 	user.last_session_id = curr_session_id
 	user.save()
 
