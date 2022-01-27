@@ -71,7 +71,7 @@ def add_todo():
 	user = users.get()
 
 	try:
-		user = users.select().where(users.last_session_id == int(curr_session_id)).get()
+		user = users.select().where(users.last_session_id == curr_session_id).get()
 	except Exception as e:
 		return "Incorrect session identificator"
 
