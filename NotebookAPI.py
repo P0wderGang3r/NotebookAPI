@@ -85,7 +85,7 @@ def add_todo():
 	todos.create(todo_id = curr_todo_id, user_id = curr_user_id, text = curr_text)
 
 	todo = todos.select().where(todos.user_id == curr_user_id).get()
-	return jsonify({todo.user_id: todo.text})
+	return jsonify({todo.todo_id: todo.text})
 	#except Exception as e:
 		#return "There are no such user to add todo"
 
