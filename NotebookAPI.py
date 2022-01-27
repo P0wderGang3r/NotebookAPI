@@ -25,7 +25,8 @@ def init_databases():
 @app.route("/user", methods=['POST'])
 def add_user():
 	users.create(user_id = int(datetime.datetime.now().timestamp()), name = request.json['name'], password = request.json['password'])
-	return jsonify({users.get(name == str(request.json['name'])).name: 'initiaized'})
+	user = users.get(name == str(request.json['name']))
+	return jsonify({user.name: 'initiaized'})
 
 
 #get /todo
