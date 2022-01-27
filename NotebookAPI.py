@@ -48,7 +48,7 @@ def get_user():
 
 #get /login
 @app.route("/login", methods=['GET'])
-def get_user():
+def login():
 	curr_name = request.json['name']
 	curr_password = request.json['password']
 	curr_datetime = int(datetime.datetime.now().timestamp())
