@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from peewee import *
 from dbclasses import *
 import datetime
+import base64
 
 app = Flask(__name__)
 
@@ -20,66 +21,117 @@ def init_databases():
 	return jsonify({'initiaized': 'initiaized'})
 
 #-----------------------------------------------------------------
+#Нужна генерация новых токенов входа
 
 #post /user
 @app.route("/user", methods=['POST'])
 def add_user():
 	curr_name = request.json['name']
 	curr_password = request.json['password']
+	curr_datetime = int(datetime.datetime.now().timestamp())
 
-	users.create(user_id = int(datetime.datetime.now().timestamp()), name = curr_name, password = curr_password)
+	curr_id = base64.b64encode(bytes('' + curr_name + curr_password + curr_datetime, 'utf-8'))
+	curr_session_id = base64.b64encode(bytes('' + curr_name + curr_password + curr_datetime, 'utf-8'))
+
+	users.create(user_id = curr_id, name = curr_name, password = curr_password, last_session = curr_session_id)
 
 	user = users.select().where(users.name == curr_name).get()
-	return jsonify({user.user_id: 'initiaized'})
+	return jsonify({'token': user.curr_session_id})
 
 #get /user
 @app.route("/user", methods=['GET'])
 def get_user():
+	curr_session_id = request.json['session_id']
+
+	user = users.select().where(users.last_session == curr_session_id).get()
+	return jsonify({'name': user.name})
+
+#get /login
+@app.route("/login", methods=['GET'])
+def get_user():
 	curr_name = request.json['name']
 	curr_password = request.json['password']
+	curr_datetime = int(datetime.datetime.now().timestamp())
 
-	user = users.select().where(users.name == curr_name).get()
-	return jsonify({user.user_id: user.password})
+	curr_session_id = base64.b64encode(bytes('' + curr_name + curr_password + curr_datetime, 'utf-8'))
+
+	user = users.select().where(users.name == curr_name, users.password == curr_password).get()
+	user.last_session = curr_session_id
+	user.save()
+
+	return jsonify({'token': user.last_session})
 
 #-----------------------------------------------------------------
 
 #post /todo
 @app.route("/todo", methods=['POST'])
 def add_todo():
-	curr_id = request.json['user_id']
-	curr_text = request.json['text']
+	curr_session_id = request.json['session_id']
+	user = users.get()
 
 	try:
-		user = users.select().where(users.user_id == int(curr_id)).get()
+		user = users.select().where(users.last_session == int(curr_session_id)).get()
+	except Exception as e:
+		return "Incorrect session identificator"
+
+	curr_user_id = user.user_id
+	curr_text = request.json['text']
+	curr_datetime = int(datetime.datetime.now().timestamp())
+
+	curr_todo_id = base64.b64encode(bytes('' + curr_user_id + curr_datetime, 'utf-8'))
+
+	try:
+		todos.create(todo_id = curr_todo_id, user_id = curr_user_id, text = curr_text)
+
+		todo = todos.select().where(todos.user_id == curr_user_id).get()
+		return jsonify({todo.user_id: todo.text})
 	except Exception as e:
 		return "There are no such user to add todo"
-
-	todos.create(todo_id = int(datetime.datetime.now().timestamp()), user_id = curr_id, text = curr_text)
-
-	todo = todos.select().where(todos.user_id == curr_id).get()
-	return jsonify({todo.user_id: todo.text})
 
 #get /todo
 @app.route("/todo", methods=['GET'])
 def get_todo():
-	return jsonify({todos.select().get().user_id: todos.select().get().text})
+	curr_session_id = request.json['session_id']
+	user = users.get()
+
+	try:
+		user = users.select().where(users.last_session == int(curr_session_id)).get()
+	except Exception as e:
+		return "Incorrect session identificator"
+
+	curr_user_id = user.user_id
+
+	todo_output = todos.select().where(todos.user_id == curr_user_id).get()
+
+	try:
+		return jsonify(todo_output)
+	except Exception as e:
+		return "There are no todos for provided id in the table"
 
 #-----------------------------------------------------------------
 
 #delete /todo/{id}
 @app.route("/user", methods=['DELETE'])
 def delete_todo():
-	todo = todos.get(user_id == request.json['user_id'], todo_id == request.json['todo_id'])
-	user.delete_instance()
-	return jsonify({'deleted': 'deleted'})
+	curr_user_id = request.json['user_id']
+	curr_todo_id = request.json['todo_id']
+
+	todo = todos.select().where(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id).get()
+	todo.delete_instance()
+	return "deleted"
 
 
 #put /todo/{id}
 @app.route("/user", methods=['PUT'])
 def update_todo():
-	todo = todos(user_id == request.json['user_id'], todo_id == request.json['todo_id'])
-	todo.text = request.json['user_id']
+	curr_user_id = request.json['user_id']
+	curr_todo_id = request.json['todo_id']
+	curr_text = request.json['text']
+
+	todo = todos.select().where(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id).get()
+	todo.text = curr_text
 	todo.save()
+
 	return jsonify({'added': 'added'})
 
 
