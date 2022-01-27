@@ -105,7 +105,7 @@ def get_todo():
 	todo_output = todos.select().where(todos.user_id == curr_user_id).dicts().execute()
 
 	#try:
-	return jsonify(todo_output)
+	return todo_output
 	#except Exception as e:
 		#return "There are no todos for provided id in the table"
 
