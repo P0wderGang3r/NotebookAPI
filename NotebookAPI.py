@@ -15,9 +15,11 @@ def test_route():
 
 @app.route("/init_databases", methods=['POST'])
 def init_databases():
+	users.delete().execute()
+	todos.delete().execute()
 	users.create_table()
 	todos.create_table()
-	return jsonify({'initiaized': 'initiaized'}), 201
+	return jsonify({'initiaized': 'initiaized'})
 
 #post /user
 @app.route("/user", methods=['POST'])
