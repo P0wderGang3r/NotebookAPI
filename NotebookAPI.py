@@ -43,7 +43,7 @@ def add_user():
 
 	user = users.select().where(users.name == curr_name).get()
 	#return jsonify({'token': user.last_session_id})
-	return jsonify({'token': user.user_id})
+	return jsonify({'token': user.last_session_id})
 
 #get /user
 @app.route("/user", methods=['GET'])
