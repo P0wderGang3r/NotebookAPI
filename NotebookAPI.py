@@ -102,11 +102,7 @@ def get_todo():
 
 	curr_user_id = user.user_id
 
-	todo_query = todos.get(todos.user_id == curr_user_id)
-	todo_output = []
-
-	for todo in todo_query:
-		todo_output.append(sonify(todo.todo_id, todo.text))
+	todo_output = todos.select().where(todos.user_id == curr_user_id).dicts().execute()
 
 	#try:
 	return jsonify(todo_output)
