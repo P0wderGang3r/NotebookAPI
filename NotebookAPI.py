@@ -102,10 +102,14 @@ def get_todo():
 
 	curr_user_id = user.user_id
 
-	todo_output = todos.select().where(todos.user_id == curr_user_id).dicts().execute()
+	todo_query = todos.select().where(todos.user_id == curr_user_id).dicts().execute()
+	todo_output = []
+
+	for todo in todo_query:
+		todo_output.append(todo)
 
 	#try:
-	return todo_output
+	return jsonify(todo_output)
 	#except Exception as e:
 		#return "There are no todos for provided id in the table"
 
