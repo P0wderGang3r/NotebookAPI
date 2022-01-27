@@ -29,7 +29,7 @@ def add_user():
 	curr_password = request.json['password']
 
 	curr_datetime = int(datetime.datetime.now().timestamp())
-	user_query = users.select().where().dicts().execute()
+	user_query = users.select().dicts().execute()
 	if (len(user_query) == 0):
 		curr_id = 1
 	else:
