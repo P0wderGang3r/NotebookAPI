@@ -12,13 +12,13 @@
 * перезапуск nginx
 
 ## Рауты для задачника:
-<li>/init_databases </li>
-<li>[post] /user </li>
-<li>[get] /user </li>
-<li>[get] /login </li>
-<li>[get] /todo </li>
-<li>[post] /todo </li>
-<li>[delete] /todo </li>
-<li>[put] /todo </li>
+* [post] /init_databases
+* [post] /user
+* [get] /user
+* [get] /login
+* [get] /todo
+* [post] /todo
+* [put] /todo
+* [delete] /todo
 
 ## Рауты для файлового хранилища:
