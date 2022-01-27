@@ -30,8 +30,8 @@ def add_user():
 	curr_password = request.json['password']
 	curr_datetime = int(datetime.datetime.now().timestamp())
 
-	curr_id = int(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
-	curr_session_id = int(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
+	curr_id = int.from_bytes(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
+	curr_session_id = int.from_bytes(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
 	users.create(user_id = curr_id, name = curr_name, password = curr_password, last_session = curr_session_id)
 
@@ -51,7 +51,7 @@ def get_user():
 def login():
 	curr_name = request.json['name']
 	curr_password = request.json['password']
-	curr_datetime = int.from_bytes(datetime.datetime.now().timestamp())
+	curr_datetime = int(datetime.datetime.now().timestamp())
 
 	curr_session_id = int.from_bytes(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
@@ -76,7 +76,7 @@ def add_todo():
 
 	curr_user_id = user.user_id
 	curr_text = request.json['text']
-	curr_datetime = int.from_bytes(datetime.datetime.now().timestamp())
+	curr_datetime = int(datetime.datetime.now().timestamp())
 
 	curr_todo_id = int.from_bytes(base64.b64encode(bytes('' + curr_user_id + str(curr_datetime), 'utf-8')))
 
