@@ -30,7 +30,8 @@ def add_user():
 	curr_password = request.json['password']
 	curr_datetime = int(datetime.datetime.now().timestamp())
 
-	curr_id = 0 + int(curr_name) + int(curr_password) + int(str(curr_datetime))
+
+	curr_id = 0 + ord(curr_name[0]) + ord(curr_password[0]) + int(curr_datetime)
 	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')), 'big')
 
 	users.create(user_id = curr_id, name = curr_name, password = curr_password, last_session = curr_session_id)
