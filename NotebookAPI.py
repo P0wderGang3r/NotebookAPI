@@ -243,6 +243,7 @@ def allowed_file(filename):
 #post /files
 @app.route("/files", methods=['POST'])
 def add_file():
+	return request
 	# Проверка на наличие файла в запросе
 	if 'file' not in request.files:
 		return make_response("Неверные входные данные", 400)
