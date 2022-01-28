@@ -243,17 +243,6 @@ def allowed_file(filename):
 #post /files
 @app.route("/files", methods=['POST'])
 def add_file():
-	# Аутентификация
-	try:
-		curr_session_id = request.json['token']
-	except Exception as e:
-		return make_response("Неверные входные данные", 400)
-
-	try:
-		user = users.select().where(users.last_session_id == curr_session_id).get()
-	except Exception as e:
-		return make_response("Пользователя с предоставленным идентификатором сессии не существует", 404)
-
 	# Проверка на наличие файла в запросе
 	if 'file' not in request.files:
 		return make_response("Неверные входные данные", 400)
@@ -282,17 +271,6 @@ def add_file():
 #get /files
 @app.route("/files", methods=['GET'])
 def get_file():
-	# Аутентификация
-	try:
-		curr_session_id = request.json['token']
-	except Exception as e:
-		return make_response("Неверные входные данные", 400)
-
-	try:
-		user = users.select().where(users.last_session_id == curr_session_id).get()
-	except Exception as e:
-		return make_response("Пользователя с предоставленным идентификатором сессии не существует", 404)
-
 	# Получение имени файла
 	try:
 		file_name = secure_filename(request.json['file_name'])
@@ -309,17 +287,6 @@ def get_file():
 #delete /files
 @app.route("/files", methods=['DELETE'])
 def delete_file():
-	# Аутентификация
-	try:
-		curr_session_id = request.json['token']
-	except Exception as e:
-		return make_response("Неверные входные данные", 400)
-
-	try:
-		user = users.select().where(users.last_session_id == curr_session_id).get()
-	except Exception as e:
-		return make_response("Пользователя с предоставленным идентификатором сессии не существует", 404)
-
 	# Получение имени файла
 	try:
 		file_name = secure_filename(request.json['file_name'])
