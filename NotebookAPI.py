@@ -233,7 +233,8 @@ def update_todo():
 
 #--------------------------POST/GET/DELETE FILES-----------------------------
 
-main_upload_folder = '/home/FlaskMachineUser/storage'
+UPLOAD_FOLDER = '/home/FlaskMachineUser/storage'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 allowed_extensions = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 def allowed_file(filename):
@@ -297,5 +298,4 @@ def delete_file():
 
 
 if __name__ == "__main__":
-	app.config['UPLOAD_FOLDER'] = main_upload_folder
 	app.run(host='0.0.0.0')
