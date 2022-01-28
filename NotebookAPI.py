@@ -233,7 +233,7 @@ def update_todo():
 
 #--------------------------POST/GET/DELETE FILES-----------------------------
 
-UPLOAD_FOLDER = '/home/FlaskMachineUser/storage'
+UPLOAD_FOLDER = '/home/FlaskMachineUser/NotebookAPI/storage'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 allowed_extensions = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
