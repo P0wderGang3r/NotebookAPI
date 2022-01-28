@@ -272,10 +272,7 @@ def get_file():
 	except Exception as e:
 		return make_response("Неверные входные данные", 400)
 
-	try:
-		return send_from_directory(os.path.join(app.config["UPLOAD_FOLDER"], file_name))
-	except Exception as e:
-		return make_response("There are no such file", 404)
+	return send_from_directory(os.path.join(app.config["UPLOAD_FOLDER"], file_name))
 
 
 #delete /files
