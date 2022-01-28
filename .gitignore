@@ -3,6 +3,8 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=flask,python
 
 storage
+users.db
+todos.db
 
 ### Flask ###
 instance/*
