@@ -244,23 +244,23 @@ def allowed_file(filename):
 @app.route("/files", methods=['POST'])
 def add_file():
 	# Проверка на наличие файла в запросе
-    if 'file' not in request.files:
-        return make_response("Неверные входные данные", 400)
+	if 'file' not in request.files:
+		return make_response("Неверные входные данные", 400)
 
-    file = request.files['file']
+	file = request.files['file']
 
 	# Отлов "пустых" файлов
-    if file.filename == '':
-        return make_response("Неверные входные данные", 400)
+	if file.filename == '':
+		return make_response("Неверные входные данные", 400)
 
 	# Если файл существует и находится в списке допустимых файлов
-    if file and allowed_file(file.filename):
+	if file and allowed_file(file.filename):
 		# Очищаем название файла от эксплойтов пути до файла
-        filename = secure_filename(file.filename)
+		filename = secure_filename(file.filename)
 		# Сохраняем файл на диск по пути 'main_upload_folder'
-        file.save(os.path.join(app.config['main_upload_folder'], filename))
+		file.save(os.path.join(app.config['main_upload_folder'], filename))
 
-	return make_response(str("added file:"+secure_filename(file.filename)), 200)
+		return make_response(str("added file:"+secure_filename(file.filename)), 200)
 
 
 #get /files
@@ -272,7 +272,7 @@ def get_file():
 		return make_response("Неверные входные данные", 400)
 
 	try:
-    	return send_from_directory(app.config["UPLOAD_FOLDER"], file_name)
+		return send_from_directory(app.config["UPLOAD_FOLDER"], file_name)
 	except Exception as e:
 		return make_response("There are no such file", 404)
 
@@ -286,7 +286,7 @@ def delete_file():
 		return make_response("Неверные входные данные", 400)
 
 	try:
-    	os.remove(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
+		os.remove(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
 	except Exception as e:
 		return make_response("There are no such file", 404)
 
