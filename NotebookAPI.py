@@ -44,10 +44,14 @@ def add_user():
 	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
 	#основной код
-	users.create(user_id = curr_id, name = curr_name, password = curr_password, last_session_id = curr_session_id)
+	try:
+		users.create(user_id = curr_id, name = curr_name, password = curr_password, last_session_id = curr_session_id)
 
-	user = users.select().where(users.name == curr_name).get()
-	return jsonify({'token': user.last_session_id})
+		user = users.select().where(users.name == curr_name).get()
+		return jsonify({'token': user.last_session_id})
+	except Exception as e:
+		return "Произошла внутренняя ошибка сервера при попытке создания новой учётной записи"
+
 
 #get /user
 @app.route("/user", methods=['GET'])
@@ -76,11 +80,14 @@ def login():
 	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
 
 	#основной код
-	user = users.get(users.name == curr_name, users.password == curr_password)
-	user.last_session_id = curr_session_id
-	user.save()
+	try:
+		user = users.get(users.name == curr_name, users.password == curr_password)
+		user.last_session_id = curr_session_id
+		user.save()
 
-	return jsonify({'token': user.last_session_id})
+		return jsonify({'token': user.last_session_id})
+	except Exception as e:
+		return "Пользователь с предоставленными логином и паролем не был найден"
 
 
 #-----------------------------------------------------------------
@@ -94,11 +101,11 @@ def add_todo():
 		curr_session_id = request.json['token']
 	except Exception as e:
 		return "Неверные входные данные"
-	user = users.get()
+
 	try:
 		user = users.select().where(users.last_session_id == curr_session_id).get()
 	except Exception as e:
-		return "Incorrect session identificator"
+		return "Пользователя с предоставленным идентификатором сессии не существует"
 
 	#сбор данных об окружении
 	curr_user_id = user.user_id
@@ -108,7 +115,7 @@ def add_todo():
 		return "Неверные входные данные"
 
 	curr_datetime = int(datetime.datetime.now().timestamp())
-	curr_todo_id = 0 + curr_user_id + int(curr_datetime) + ord(curr_session_id[0])
+	curr_todo_id = 0 + curr_user_id + int(curr_datetime)
 
 	#основной код
 	try:
@@ -117,7 +124,7 @@ def add_todo():
 		todo = todos.select().where(todos.todo_id == curr_todo_id).get()
 		return jsonify({todo.todo_id: todo.text})
 	except Exception as e:
-		return "There are no such user to add todo"
+		return "Произошла внутренняя ошибка сервера при попытке создания новой задачи"
 
 #get /todo
 @app.route("/todo", methods=['GET'])
@@ -127,26 +134,26 @@ def get_todo():
 		curr_session_id = request.json['token']
 	except Exception as e:
 		return "Неверные входные данные"
-	user = users.get()
+
 	try:
 		user = users.select().where(users.last_session_id == curr_session_id).get()
 	except Exception as e:
-		return "Incorrect session identificator"
+		return "Пользователя с предоставленным идентификатором сессии не существует"
 
 	#сбор данных об окружении
 	curr_user_id = user.user_id
 
 	#основной код
-	todo_query = todos.select().where(todos.user_id == curr_user_id).dicts().execute()
-	todo_output = []
-
-	for todo in todo_query:
-		todo_output.append(todo)
-
 	try:
+		todo_query = todos.select().where(todos.user_id == curr_user_id).dicts().execute()
+		todo_output = []
+
+		for todo in todo_query:
+			todo_output.append(todo)
+
 		return jsonify(todo_output)
 	except Exception as e:
-		return "There are no todos for provided id in the table"
+		return "Для пользователя с предоставленным идентификатором сессии данные о задачах не были найдены"
 
 
 #-----------------------------------------------------------------
@@ -160,11 +167,11 @@ def delete_todo():
 		curr_session_id = request.json['token']
 	except Exception as e:
 		return "Неверные входные данные"
-	user = users.get()
+
 	try:
 		user = users.select().where(users.last_session_id == curr_session_id).get()
 	except Exception as e:
-		return "Incorrect session identificator"
+		return "Пользователя с предоставленным идентификатором сессии не существует"
 
 	#сбор данных об окружении
 	curr_user_id = user.user_id
@@ -174,9 +181,13 @@ def delete_todo():
 		return "Неверные входные данные"
 
 	#основной код
-	todo = todos.get(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id)
-	todo.delete_instance()
-	return "deleted"
+	try:
+		todo = todos.get(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id)
+		todo.delete_instance()
+		return "Задача успешно удалена"
+	except Exception as e:
+		return "Возникла внутренняя ошибка сервера при попытки удаления задачи с предоставленным идентификатором. Возможно, задачи с таким идентификатором не существует"
+
 
 
 #put /todo
@@ -187,11 +198,11 @@ def update_todo():
 		curr_session_id = request.json['token']
 	except Exception as e:
 		return "Неверные входные данные"
-	user = users.get()
+
 	try:
 		user = users.select().where(users.last_session_id == curr_session_id).get()
 	except Exception as e:
-		return "Incorrect session identificator"
+		return "Пользователя с предоставленным идентификатором сессии не существует"
 
 	#сбор данных об окружении
 	curr_user_id = user.user_id
@@ -202,11 +213,14 @@ def update_todo():
 		return "Неверные входные данные"
 
 	#основной код
-	todo = todos.get(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id)
-	todo.text = curr_text
-	todo.save()
+	try:
+		todo = todos.get(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id)
+		todo.text = curr_text
+		todo.save()
 
-	return jsonify({todo.todo_id: todo.text})
+		return jsonify({todo.todo_id: todo.text})
+	except Exception as e:
+		return "Произошла внутренняя ошибка сервера при попытке обновления содержимого задачи. Возможно, задачи с таким идентификатором не существует"
 
 
 #-----------------------------------------------------------------
