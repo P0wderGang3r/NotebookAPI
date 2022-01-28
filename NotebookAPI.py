@@ -233,8 +233,7 @@ def update_todo():
 
 #--------------------------POST/GET/DELETE FILES-----------------------------
 
-UPLOAD_FOLDER = '/home/FlaskMachineUser/NotebookAPI/storage'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = '/home/FlaskMachineUser/NotebookAPI/storage'
 allowed_extensions = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 def allowed_file(filename):
@@ -244,6 +243,17 @@ def allowed_file(filename):
 #post /files
 @app.route("/files", methods=['POST'])
 def add_file():
+	# Аутентификация
+	try:
+		curr_session_id = request.json['token']
+	except Exception as e:
+		return make_response("Неверные входные данные", 400)
+
+	try:
+		user = users.select().where(users.last_session_id == curr_session_id).get()
+	except Exception as e:
+		return make_response("Пользователя с предоставленным идентификатором сессии не существует", 404)
+
 	# Проверка на наличие файла в запросе
 	if 'file' not in request.files:
 		return make_response("Неверные входные данные", 400)
@@ -252,26 +262,44 @@ def add_file():
 
 	# Отлов "пустых" файлов
 	if file.filename == '':
-		return make_response("Неверные входные данные", 401)
+		return make_response("Неверные входные данные", 400)
 
 	# Если файл существует и находится в списке допустимых файлов
 	if file and allowed_file(file.filename):
 		# Очищаем название файла от эксплойтов пути до файла
 		filename = secure_filename(file.filename)
 		# Сохраняем файл на диск по пути 'main_upload_folder'
-		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+		try:
+			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+		except Exception as e:
+			return make_response("Файл с таким именем уже существует", 400)
 
 		return make_response(str("added file:"+secure_filename(file.filename)), 200)
+
+	return ("Странная и очень специфичная ошибка", 500)
 
 
 #get /files
 @app.route("/files", methods=['GET'])
 def get_file():
+	# Аутентификация
+	try:
+		curr_session_id = request.json['token']
+	except Exception as e:
+		return make_response("Неверные входные данные", 400)
+
+	try:
+		user = users.select().where(users.last_session_id == curr_session_id).get()
+	except Exception as e:
+		return make_response("Пользователя с предоставленным идентификатором сессии не существует", 404)
+
+	# Получение имени файла
 	try:
 		file_name = secure_filename(request.json['file_name'])
 	except Exception as e:
 		return make_response("Неверные входные данные", 400)
 
+	# Отправка файла
 	try:
 		return send_from_directory(app.config["UPLOAD_FOLDER"], file_name)
 	except Exception as e:
@@ -281,11 +309,24 @@ def get_file():
 #delete /files
 @app.route("/files", methods=['DELETE'])
 def delete_file():
+	# Аутентификация
+	try:
+		curr_session_id = request.json['token']
+	except Exception as e:
+		return make_response("Неверные входные данные", 400)
+
+	try:
+		user = users.select().where(users.last_session_id == curr_session_id).get()
+	except Exception as e:
+		return make_response("Пользователя с предоставленным идентификатором сессии не существует", 404)
+
+	# Получение имени файла
 	try:
 		file_name = secure_filename(request.json['file_name'])
 	except Exception as e:
 		return make_response("Неверные входные данные", 400)
 
+	# Удаление файла
 	try:
 		os.remove(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
 	except Exception as e:
