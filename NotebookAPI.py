@@ -258,7 +258,7 @@ def add_file():
 		# Очищаем название файла от эксплойтов пути до файла
 		filename = secure_filename(file.filename)
 		# Сохраняем файл на диск по пути 'main_upload_folder'
-		file.save(os.path.join(app.config['main_upload_folder'], filename))
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
 		return make_response(str("added file:"+secure_filename(file.filename)), 200)
 
