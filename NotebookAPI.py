@@ -25,8 +25,11 @@ def init_databases():
 @app.route("/user", methods=['POST'])
 def add_user():
 	#сбор данных об окружении
-	curr_name = request.json['name']
-	curr_password = request.json['password']
+	try:
+		curr_name = request.json['name']
+		curr_password = request.json['password']
+	except Exception as e:
+		return "Неверные входные данные"
 
 	curr_datetime = int(datetime.datetime.now().timestamp())
 
@@ -50,7 +53,10 @@ def add_user():
 @app.route("/user", methods=['GET'])
 def get_user():
 	#сбор данных об окружении
-	curr_session_id = request.json['token']
+	try:
+		curr_session_id = request.json['token']
+	except Exception as e:
+		return "Неверные входные данные"
 
 	#основной код
 	user = users.select().where(users.last_session_id == curr_session_id).get()
@@ -60,8 +66,11 @@ def get_user():
 @app.route("/login", methods=['GET'])
 def login():
 	#сбор данных об окружении
-	curr_name = request.json['name']
-	curr_password = request.json['password']
+	try:
+		curr_name = request.json['name']
+		curr_password = request.json['password']
+	except Exception as e:
+		return "Неверные входные данные"
 
 	curr_datetime = int(datetime.datetime.now().timestamp())
 	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
@@ -81,7 +90,10 @@ def login():
 @app.route("/todo", methods=['POST'])
 def add_todo():
 	#Аутентификация
-	curr_session_id = request.json['token']
+	try:
+		curr_session_id = request.json['token']
+	except Exception as e:
+		return "Неверные входные данные"
 	user = users.get()
 	try:
 		user = users.select().where(users.last_session_id == curr_session_id).get()
@@ -90,7 +102,10 @@ def add_todo():
 
 	#сбор данных об окружении
 	curr_user_id = user.user_id
-	curr_text = request.json['text']
+	try:
+		curr_text = request.json['text']
+	except Exception as e:
+		return "Неверные входные данные"
 
 	curr_datetime = int(datetime.datetime.now().timestamp())
 	curr_todo_id = 0 + curr_user_id + int(curr_datetime) + ord(curr_session_id[0])
@@ -107,16 +122,21 @@ def add_todo():
 #get /todo
 @app.route("/todo", methods=['GET'])
 def get_todo():
-	curr_session_id = request.json['token']
+	#Аутентификация
+	try:
+		curr_session_id = request.json['token']
+	except Exception as e:
+		return "Неверные входные данные"
 	user = users.get()
-
 	try:
 		user = users.select().where(users.last_session_id == curr_session_id).get()
 	except Exception as e:
 		return "Incorrect session identificator"
 
+	#сбор данных об окружении
 	curr_user_id = user.user_id
 
+	#основной код
 	todo_query = todos.select().where(todos.user_id == curr_user_id).dicts().execute()
 	todo_output = []
 
@@ -136,7 +156,10 @@ def get_todo():
 @app.route("/todo", methods=['DELETE'])
 def delete_todo():
 	#Аутентификация
-	curr_session_id = request.json['token']
+	try:
+		curr_session_id = request.json['token']
+	except Exception as e:
+		return "Неверные входные данные"
 	user = users.get()
 	try:
 		user = users.select().where(users.last_session_id == curr_session_id).get()
@@ -145,7 +168,10 @@ def delete_todo():
 
 	#сбор данных об окружении
 	curr_user_id = user.user_id
-	curr_todo_id = request.json['todo_id']
+	try:
+		curr_todo_id = request.json['todo_id']
+	except Exception as e:
+		return "Неверные входные данные"
 
 	#основной код
 	todo = todos.get(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id)
@@ -157,7 +183,10 @@ def delete_todo():
 @app.route("/todo", methods=['PUT'])
 def update_todo():
 	#Аутентификация
-	curr_session_id = request.json['token']
+	try:
+		curr_session_id = request.json['token']
+	except Exception as e:
+		return "Неверные входные данные"
 	user = users.get()
 	try:
 		user = users.select().where(users.last_session_id == curr_session_id).get()
@@ -166,8 +195,11 @@ def update_todo():
 
 	#сбор данных об окружении
 	curr_user_id = user.user_id
-	curr_todo_id = request.json['todo_id']
-	curr_text = request.json['text']
+	try:
+		curr_todo_id = request.json['todo_id']
+		curr_text = request.json['text']
+	except Exception as e:
+		return "Неверные входные данные"
 
 	#основной код
 	todo = todos.get(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id)
