@@ -251,7 +251,7 @@ def add_file():
 
 	# Отлов "пустых" файлов
 	if file.filename == '':
-		return make_response("Неверные входные данные", 400)
+		return make_response("Неверные входные данные", 401)
 
 	# Если файл существует и находится в списке допустимых файлов
 	if file and allowed_file(file.filename):
