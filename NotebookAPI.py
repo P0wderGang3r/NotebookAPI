@@ -261,7 +261,7 @@ def add_file():
 		try:
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 		except Exception as e:
-			return make_response("Файл с таким именем уже существует", 400)
+			return make_response("Странная и очень специфичная ошибка", 500)
 
 		return make_response(str("added file:"+secure_filename(file.filename)), 200)
 
