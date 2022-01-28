@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response, flash
+from flask import Flask, jsonify, request, make_response, send_from_directory
 from peewee import *
 from dbclasses import *
 import datetime
@@ -272,7 +272,10 @@ def get_file():
 	except Exception as e:
 		return make_response("Неверные входные данные", 400)
 
-	return send_from_directory(os.path.join(app.config["UPLOAD_FOLDER"], file_name))
+	try:
+		return send_from_directory(app.config["UPLOAD_FOLDER"], file_name)
+	except Exception as e:
+		return make_response("There are no such file", 404)
 
 
 #delete /files
