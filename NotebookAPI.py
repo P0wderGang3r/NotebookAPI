@@ -260,7 +260,7 @@ def add_file():
 		# Сохраняем файл на диск по пути 'main_upload_folder'
         file.save(os.path.join(app.config['main_upload_folder'], filename))
 
-	return make_response("added file:" + secure_filename(file.filename), 200)
+	return make_response(str("added file:"+secure_filename(file.filename)), 200)
 
 
 #get /files
