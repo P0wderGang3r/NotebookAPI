@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-	return make_response("<h1 style = 'color:green'>Default route</h1>" +	"Routes: <br>" + "<li>/init_databases </li>" + "<li>[post] /user </li>" + "<li>[get] /user </li>" + "<li>[get] /login </li>" + "<li>[get] /todo </li>" + "<li>[post] /todo </li>" + "<li>[delete] /todo </li>" + "<li>[put] /todo </li>", 200)
+	return make_response("<h1 style = 'color:green'>Default route</h1>" + "Routes: <br>" + "<li>/init_databases </li>" + "<li>[post] /user </li>" + "<li>[get] /user </li>" + "<li>[get] /login </li>" + "<li>[get] /todo </li>" + "<li>[post] /todo </li>" + "<li>[delete] /todo </li>" + "<li>[put] /todo </li>", 200)
 
 #В случае существования баз данных не удаляет их, оттого сплю спокойно
 @app.route("/init_databases", methods=['POST'])
@@ -18,7 +18,7 @@ def init_databases():
 	return make_response("databases initialized", 200)
 
 
-#-----------------------------------------------------------------
+#----------------------------POST/GET USER / GET LOGIN------------------------------------
 
 
 #post /user
@@ -69,6 +69,7 @@ def get_user():
 	except Exception as e:
 		return make_response("Пользователь с предоставленным идентификатором сессии не был найден", 404)
 
+
 #get /login
 @app.route("/login", methods=['GET'])
 def login():
@@ -93,7 +94,7 @@ def login():
 		return make_response("Пользователь с предоставленными логином и паролем не был найден", 404)
 
 
-#-----------------------------------------------------------------
+#----------------------------POST/GET TODO-------------------------------
 
 
 #post /todo
@@ -129,6 +130,7 @@ def add_todo():
 	except Exception as e:
 		return make_response("Произошла внутренняя ошибка сервера при попытке создания новой задачи", 500)
 
+
 #get /todo
 @app.route("/todo", methods=['GET'])
 def get_todo():
@@ -159,7 +161,7 @@ def get_todo():
 		return make_response("Для пользователя с предоставленным идентификатором сессии данные о задачах не были найдены", 500)
 
 
-#-----------------------------------------------------------------
+#---------------------------DELETE/PUT TODO------------------------------
 
 
 #delete /todo
@@ -190,7 +192,6 @@ def delete_todo():
 		return make_response("Задача успешно удалена", 200)
 	except Exception as e:
 		return make_response("Возникла внутренняя ошибка сервера при попытки удаления задачи с предоставленным идентификатором. Возможно, задачи с таким идентификатором не существует", 500)
-
 
 
 #put /todo
@@ -224,6 +225,60 @@ def update_todo():
 		return make_response(jsonify({todo.todo_id: todo.text}), 200)
 	except Exception as e:
 		return make_response("Произошла внутренняя ошибка сервера при попытке обновления содержимого задачи. Возможно, задачи с таким идентификатором не существует", 500)
+
+
+#--------------------------POST/GET/DELETE FILES-----------------------------
+
+
+#post /files
+@app.route("/files", methods=['POST'])
+def add_file():
+	#Аутентификация
+	try:
+		curr_session_id = request.json['token']
+	except Exception as e:
+		return make_response("Неверные входные данные", 400)
+
+	try:
+		user = users.select().where(users.last_session_id == curr_session_id).get()
+	except Exception as e:
+		return make_response("Пользователя с предоставленным идентификатором сессии не существует", 404)
+
+	return make_response("posted", 200)
+
+
+#get /files
+@app.route("/files", methods=['GET'])
+def get_file():
+	#Аутентификация
+	try:
+		curr_session_id = request.json['token']
+	except Exception as e:
+		return make_response("Неверные входные данные", 400)
+
+	try:
+		user = users.select().where(users.last_session_id == curr_session_id).get()
+	except Exception as e:
+		return make_response("Пользователя с предоставленным идентификатором сессии не существует", 404)
+
+	return make_response("file", 200)
+
+
+#delete /files
+@app.route("/files", methods=['DELETE'])
+def delete_file():
+	#Аутентификация
+	try:
+		curr_session_id = request.json['token']
+	except Exception as e:
+		return make_response("Неверные входные данные", 400)
+
+	try:
+		user = users.select().where(users.last_session_id == curr_session_id).get()
+	except Exception as e:
+		return make_response("Пользователя с предоставленным идентификатором сессии не существует", 404)
+
+	return make_response("deleted", 200)
 
 
 #-----------------------------------------------------------------
