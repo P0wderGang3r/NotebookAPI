@@ -8,7 +8,7 @@
 
 ## Отчёт black:
 По большей части исправил странные проблемы с табуляциями/пробелами, которые обнаружил PyLint.
-<br>
+<br><br>
 ⬢[anasko@toolbox NotebookAPI]$ black NotebookAPI.py
 <br>
 reformatted NotebookAPI.py
