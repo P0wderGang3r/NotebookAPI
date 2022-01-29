@@ -1,0 +1,35 @@
+⬢[anasko@toolbox NotebookAPI]$ bandit NotebookAPI.py
+[main]	INFO	profile include tests: None
+[main]	INFO	profile exclude tests: None
+[main]	INFO	cli include tests: None
+[main]	INFO	cli exclude tests: None
+[main]	INFO	running on Python 3.10.0
+[node_visitor]	INFO	Unable to find qualified name for module: NotebookAPI.py
+Run started:2022-01-29 14:48:28.286853
+
+Test results:
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   Location: NotebookAPI.py:326:14
+   More Info: https://bandit.readthedocs.io/en/latest/plugins/b104_hardcoded_bind_all_interfaces.html
+325	if __name__ == "__main__":
+326		app.run(host='0.0.0.0')
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 209
+	Total lines skipped (#nosec): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0.0
+		Low: 0.0
+		Medium: 1.0
+		High: 0.0
+	Total issues (by confidence):
+		Undefined: 0.0
+		Low: 0.0
+		Medium: 1.0
+		High: 0.0
+Files skipped (0):

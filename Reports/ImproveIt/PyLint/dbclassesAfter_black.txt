@@ -1,0 +1,14 @@
+⬢[anasko@toolbox NotebookAPI]$ pylint dbclasses.py
+************* Module dbclasses
+dbclasses.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+dbclasses.py:11:0: C0103: Class name "users" doesn't conform to PascalCase naming style (invalid-name)
+dbclasses.py:11:0: C0115: Missing class docstring (missing-class-docstring)
+dbclasses.py:17:4: C0115: Missing class docstring (missing-class-docstring)
+dbclasses.py:17:4: R0903: Too few public methods (0/2) (too-few-public-methods)
+dbclasses.py:23:0: C0103: Class name "todos" doesn't conform to PascalCase naming style (invalid-name)
+dbclasses.py:23:0: C0115: Missing class docstring (missing-class-docstring)
+dbclasses.py:28:4: C0115: Missing class docstring (missing-class-docstring)
+dbclasses.py:28:4: R0903: Too few public methods (0/2) (too-few-public-methods)
+
+------------------------------------------------------------------
+Your code has been rated at 3.57/10 (previous run: 3.57/10, +0.00)
