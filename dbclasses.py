@@ -1,4 +1,4 @@
-from peewee import *
+from peewee import Model, IntegerField, CharField, SqliteDatabase, ForeignKeyField, TextField
 
 #Пользователи
 class users(Model):
