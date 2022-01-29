@@ -39,31 +39,33 @@ def init_databases():
 def add_user():
 	#сбор данных об окружении
 	try:
-		curr_name = request.json['name']
-		curr_password = request.json['password']
+		c_name = request.json['name']
+		c_password = request.json['password']
 	except Exception:
 		return make_response("Неверные входные данные", 400)
 
-	curr_datetime = int(datetime.datetime.now().timestamp())
+	c_datetime = int(datetime.datetime.now().timestamp())
 
 	#костыль для определения последнего сохранённого user_id
 	user_query = users.select().dicts().execute()
-	if (len(user_query) == 0):
-		curr_id = 1
+	if len(user_query) == 0:
+		c_id = 1
 	else:
-		curr_id = user_query[len(user_query) - 1]['user_id'] + 1
+		c_id = user_query[len(user_query) - 1]['user_id'] + 1
 
-	#curr_id = len(todo_query) + ord(curr_name[0]) + ord(curr_password[0]) + int(curr_datetime)
-	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
+	#c_id = len(todo_query) + ord(c_name[0]) + ord(c_password[0]) + int(c_datetime)
+	b64_to_be_encoded = bytes('' + c_name + c_password + str(c_datetime), 'utf-8')
+	c_session_id = str(base64.b64encode(b64_to_be_encoded))
 
 	#основной код
 	try:
-		users.create(user_id = curr_id, name = curr_name, password = curr_password, last_session_id = curr_session_id)
+		users.create(user_id = c_id, name = c_name, password = c_password, last_session_id = c_session_id)
 
-		user = users.select().where(users.name == curr_name).get()
+		user = users.select().where(users.name == c_name).get()
 		return make_response(jsonify({'token': user.last_session_id}), 201)
 	except Exception:
-		return make_response("Произошла внутренняя ошибка сервера при попытке создания новой учётной записи", 500)
+		ret_text = "Произошла внутренняя ошибка сервера при попытке создания новой учётной записи"
+		return make_response(ret_text, 500)
 
 
 #get /user
@@ -71,13 +73,13 @@ def add_user():
 def get_user():
 	#сбор данных об окружении
 	try:
-		curr_session_id = request.json['token']
+		c_session_id = request.json['token']
 	except Exception:
 		return make_response("Неверные входные данные", 400)
 
 	#основной код
 	try:
-		user = users.select().where(users.last_session_id == curr_session_id).get()
+		user = users.select().where(users.last_session_id == c_session_id).get()
 		return make_response(jsonify({'name': user.name}), 200)
 	except Exception:
 		return make_response("Пользователь с предоставленным идентификатором сессии не был найден", 404)
@@ -88,18 +90,18 @@ def get_user():
 def login():
 	#сбор данных об окружении
 	try:
-		curr_name = request.json['name']
-		curr_password = request.json['password']
+		c_name = request.json['name']
+		c_password = request.json['password']
 	except Exception:
 		return make_response("Неверные входные данные", 400)
 
-	curr_datetime = int(datetime.datetime.now().timestamp())
-	curr_session_id = str(base64.b64encode(bytes('' + curr_name + curr_password + str(curr_datetime), 'utf-8')))
+	c_datetime = int(datetime.datetime.now().timestamp())
+	c_session_id = str(base64.b64encode(bytes('' + c_name + c_password + str(c_datetime), 'utf-8')))
 
 	#основной код
 	try:
-		user = users.get(users.name == curr_name, users.password == curr_password)
-		user.last_session_id = curr_session_id
+		user = users.get(users.name == c_name, users.password == c_password)
+		user.last_session_id = c_session_id
 		user.save()
 
 		return make_response(jsonify({'token': user.last_session_id}), 200)
@@ -115,30 +117,30 @@ def login():
 def add_todo():
 	#Аутентификация
 	try:
-		curr_session_id = request.json['token']
+		c_session_id = request.json['token']
 	except Exception:
 		return make_response("Неверные входные данные", 400)
 
 	try:
-		user = users.select().where(users.last_session_id == curr_session_id).get()
+		user = users.select().where(users.last_session_id == c_session_id).get()
 	except Exception:
 		return make_response("Пользователя с предоставленным идентификатором сессии не существует", 404)
 
 	#сбор данных об окружении
-	curr_user_id = user.user_id
+	c_user_id = user.user_id
 	try:
-		curr_text = request.json['text']
+		c_text = request.json['text']
 	except Exception:
 		return make_response("Неверные входные данные", 400)
 
-	curr_datetime = int(datetime.datetime.now().timestamp())
-	curr_todo_id = 0 + curr_user_id + int(curr_datetime)
+	c_datetime = int(datetime.datetime.now().timestamp())
+	c_todo_id = 0 + c_user_id + int(c_datetime)
 
 	#основной код
 	try:
-		todos.create(todo_id = curr_todo_id, user_id = curr_user_id, text = curr_text)
+		todos.create(todo_id = c_todo_id, user_id = c_user_id, text = c_text)
 
-		todo = todos.select().where(todos.todo_id == curr_todo_id).get()
+		todo = todos.select().where(todos.todo_id == c_todo_id).get()
 		return make_response(jsonify({'todo_id': todo.todo_id}), 201)
 	except Exception:
 		return make_response("Произошла внутренняя ошибка сервера при попытке создания новой задачи", 500)
@@ -149,21 +151,21 @@ def add_todo():
 def get_todo():
 	#Аутентификация
 	try:
-		curr_session_id = request.json['token']
+		c_session_id = request.json['token']
 	except Exception:
 		return make_response("Неверные входные данные", 400)
 
 	try:
-		user = users.select().where(users.last_session_id == curr_session_id).get()
+		user = users.select().where(users.last_session_id == c_session_id).get()
 	except Exception:
 		return make_response("Пользователя с предоставленным идентификатором сессии не существует", 404)
 
 	#сбор данных об окружении
-	curr_user_id = user.user_id
+	c_user_id = user.user_id
 
 	#основной код
 	try:
-		todo_query = todos.select().where(todos.user_id == curr_user_id).dicts().execute()
+		todo_query = todos.select().where(todos.user_id == c_user_id).dicts().execute()
 		todo_output = []
 
 		for todo in todo_query:
@@ -171,7 +173,9 @@ def get_todo():
 
 		return make_response(jsonify(todo_output), 200)
 	except Exception:
-		return make_response("Для пользователя с предоставленным идентификатором сессии данные о задачах не были найдены", 500)
+		ret_text = "Для пользователя с предоставленным идентификатором сессии"
+		ret_text += "данные о задачах не были найдены"
+		return make_response(ret_text, 500)
 
 
 #---------------------------DELETE/PUT TODO------------------------------
@@ -182,29 +186,31 @@ def get_todo():
 def delete_todo():
 	#Аутентификация
 	try:
-		curr_session_id = request.json['token']
+		c_session_id = request.json['token']
 	except Exception:
 		return make_response("Неверные входные данные", 400)
 
 	try:
-		user = users.select().where(users.last_session_id == curr_session_id).get()
+		user = users.select().where(users.last_session_id == c_session_id).get()
 	except Exception:
 		return make_response("Пользователя с предоставленным идентификатором сессии не существует", 404)
 
 	#сбор данных об окружении
-	curr_user_id = user.user_id
+	c_user_id = user.user_id
 	try:
-		curr_todo_id = request.json['todo_id']
+		c_todo_id = request.json['todo_id']
 	except Exception:
 		return make_response("Неверные входные данные", 400)
 
 	#основной код
 	try:
-		todo = todos.get(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id)
+		todo = todos.get(todos.user_id == c_user_id, todos.todo_id == c_todo_id)
 		todo.delete_instance()
 		return make_response("Задача успешно удалена", 200)
 	except Exception:
-		return make_response("Возникла внутренняя ошибка сервера при попытки удаления задачи с предоставленным идентификатором. Возможно, задачи с таким идентификатором не существует", 500)
+		ret_text = "Возникла внутренняя ошибка сервера при попытки удаления задачи с предоставленным"
+		ret_text += " идентификатором. Возможно, задачи с таким идентификатором не существует"
+		return make_response(ret_text, 500)
 
 
 #put /todo
@@ -212,32 +218,34 @@ def delete_todo():
 def update_todo():
 	#Аутентификация
 	try:
-		curr_session_id = request.json['token']
+		c_session_id = request.json['token']
 	except Exception:
 		return make_response("Неверные входные данные", 400)
 
 	try:
-		user = users.select().where(users.last_session_id == curr_session_id).get()
+		user = users.select().where(users.last_session_id == c_session_id).get()
 	except Exception:
 		return make_response("Пользователя с предоставленным идентификатором сессии не существует", 404)
 
 	#сбор данных об окружении
-	curr_user_id = user.user_id
+	c_user_id = user.user_id
 	try:
-		curr_todo_id = request.json['todo_id']
-		curr_text = request.json['text']
+		c_todo_id = request.json['todo_id']
+		c_text = request.json['text']
 	except Exception:
 		return make_response("Неверные входные данные", 400)
 
 	#основной код
 	try:
-		todo = todos.get(todos.user_id == curr_user_id, todos.todo_id == curr_todo_id)
-		todo.text = curr_text
+		todo = todos.get(todos.user_id == c_user_id, todos.todo_id == c_todo_id)
+		todo.text = c_text
 		todo.save()
 
 		return make_response(jsonify({'todo_id': todo.todo_id}), 200)
 	except Exception:
-		return make_response("Произошла внутренняя ошибка сервера при попытке обновления содержимого задачи. Возможно, задачи с таким идентификатором не существует", 500)
+		ret_text = "Произошла внутренняя ошибка сервера при попытке обновления содержимого "
+		ret_text += "задачи. Возможно, задачи с таким идентификатором не существует"
+		return make_response(ret_text, 500)
 
 
 #--------------------------POST/GET/DELETE FILES-----------------------------
