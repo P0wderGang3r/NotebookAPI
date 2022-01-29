@@ -22,3 +22,6 @@
 * [delete] /todo
 
 ## Рауты для файлового хранилища:
+* [post] /files
+* [get] /files
+* [delete] /files
