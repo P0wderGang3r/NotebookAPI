@@ -24,8 +24,7 @@ reformatted dbclasses.py
 All done! ✨ 🍰 ✨
 <br>
 1 file reformatted.
-<br><br>
-### git push
+### Результаты git pull после black
 Fast-forward
 <br>
  NotebookAPI.py                                      | 549 ++++++++++++++++++++++++++++++----------------------------
