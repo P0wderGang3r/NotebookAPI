@@ -226,7 +226,7 @@ def update_todo():
 		todo.text = curr_text
 		todo.save()
 
-		return make_response(jsonify({todo.todo_id: todo.text}), 200)
+		return make_response(jsonify({todo.todo_id, todo.text}), 200)
 	except Exception as e:
 		return make_response("Произошла внутренняя ошибка сервера при попытке обновления содержимого задачи. Возможно, задачи с таким идентификатором не существует", 500)
 
