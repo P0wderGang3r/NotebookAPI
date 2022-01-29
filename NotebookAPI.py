@@ -1,12 +1,11 @@
-from flask import Flask, jsonify, request, make_response, send_from_directory
-from peewee import *
-from dbclasses import users, todos
+import os
 import datetime
 import base64
 
-import os
-
+from flask import Flask, jsonify, request, make_response, send_from_directory
 from werkzeug.utils import secure_filename
+
+from dbclasses import users, todos
 
 app = Flask(__name__)
 
