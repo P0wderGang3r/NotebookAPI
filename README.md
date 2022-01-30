@@ -1,4 +1,4 @@
-# WebQuest
+# NotebookAPI
 
 Реализованы deploy\_dev.sh, deploy\_prod.sh, build.sh
 //Вообще, первые два не реализованы//
